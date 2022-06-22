@@ -5,6 +5,7 @@ import { useRecoilValue } from "recoil";
 import { dropzoneChildren } from "./DropzoneChildren";
 import Game from "./Game";
 import { globalKaboom } from "./globalState";
+import { parseInputFileText } from "./textParser";
 
 function App() {
   const kInstance = useRecoilValue(globalKaboom);
@@ -22,7 +23,7 @@ function App() {
             Cargar Archivo
           </Button>
           <Dropzone
-      onDrop={async (files) => console.log('file content\n', await files[0].text())}
+      onDrop={async (files) => console.log('file content\n', parseInputFileText(await files[0].text()))}
       onReject={(files) => console.log('rejected files', files)}
       maxSize={3 * 1024 ** 2}
       accept={["text/plain"]}
