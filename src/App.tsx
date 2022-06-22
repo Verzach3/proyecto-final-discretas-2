@@ -1,34 +1,40 @@
-import { Button } from '@mantine/core'
-import { randomId } from '@mantine/hooks'
-import kaboom, { KaboomCtx } from 'kaboom'
-import React, { useEffect, useRef, useState } from 'react'
+import { AppShell, Button, Navbar, Text, useMantineTheme } from "@mantine/core";
+import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
+import React from "react";
+import { useRecoilValue } from "recoil";
+import { dropzoneChildren } from "./DropzoneChildren";
+import Game from "./Game";
+import { globalKaboom } from "./globalState";
 
 function App() {
-  const [kInstance, setKInstance] = useState<undefined | KaboomCtx>(undefined)
-  const canvas = useRef(null)
-  console.log(canvas)
-  useEffect(() => {
-    if (canvas.current === null) {
-    } console.log("null");
-      
-    if (canvas.current !== null) {
-      console.log("not null");
-      setKInstance(kaboom({
-        global: false,
-        canvas: canvas.current,
-        width: 800,
-        height: 600
-
-      }))
-    }
-  }, [canvas])
-  
+  const kInstance = useRecoilValue(globalKaboom);
+  const theme = useMantineTheme()
   return (
-    <div>
-      <Button onClick={() => kInstance!.debug.log("hi")}></Button>
-      <canvas ref={canvas}/>
-    </div>
-  )
+    <AppShell
+      padding={"md"}
+      navbar={
+        <Navbar p="md" width={{ sm: 200, lg: 300 }}>
+          <Text mt={"xs"}>Log On Kaboom</Text>
+          <Button my={"xs"} onClick={() => kInstance!.debug.log("Hi")}>
+            Cargar Archivo
+          </Button>
+          <Button onClick={() => console.log("tets")}>
+            Cargar Archivo
+          </Button>
+          <Dropzone
+      onDrop={async (files) => console.log('file content\n', await files[0].text())}
+      onReject={(files) => console.log('rejected files', files)}
+      maxSize={3 * 1024 ** 2}
+      accept={["text/plain"]}
+          >
+            {(status) => dropzoneChildren(status, theme)}
+          </Dropzone>
+        </Navbar>
+      }
+    >
+      <Game />
+    </AppShell>
+  );
 }
 
-export default App
+export default App;

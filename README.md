@@ -19,3 +19,7 @@ Proyecto final del curso Matematicas Discretas II
 - Instalar Dependencias: `yarn`
 - Modo Desarrollo: `yarn dev`
 - Compilar Para Produccion: `yarn build`
+
+### Creditos
+
+- Sprites sacados de <https://opengameart.org/>
