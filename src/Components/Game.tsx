@@ -27,6 +27,7 @@ function Game() {
           canvas: canvas.current,
           width: 800,
           height: 600,
+          background: [255, 255, 255],
         })
       );
     }
@@ -41,7 +42,6 @@ function Game() {
       stringGrid = currentInput![1].map((row) =>
         row.map((cell) => cell.toString()).join("")
       );
-      kInstance.debug.log("currentInput" + currentInput);
       kInstance.addLevel(stringGrid, {
         width: 32,
         height: 32,
@@ -49,7 +49,40 @@ function Game() {
         "1": () => [kInstance.sprite("wall")],
         "2": () => [kInstance.sprite("2kilos")],
         "3": () => [kInstance.sprite("3kilos")],
+        "4": () => [kInstance.sprite("start")],
+        "5": () => [kInstance.sprite("recicle")],
       });
+      
+      kInstance.onKeyPress("x", () => {
+        kInstance.camScale(kInstance.vec2(kInstance.camScale().x * 1.1, kInstance.camScale().y * 1.1)); 
+      });
+      kInstance.onKeyPress("z", () => {
+        kInstance.camScale(kInstance.vec2(kInstance.camScale().x * 0.9, kInstance.camScale().y * 0.9));
+      }
+      );
+
+      //move the camera with wasd
+      kInstance.onKeyDown("w", () => {
+        kInstance.camPos(kInstance.vec2(kInstance.camPos().x, kInstance.camPos().y + 2));
+      }
+      );
+      kInstance.onKeyDown("s", () => {
+        kInstance.camPos(kInstance.vec2(kInstance.camPos().x, kInstance.camPos().y - 2));
+      }
+      );
+      kInstance.onKeyDown("a", () => {
+        kInstance.camPos(kInstance.vec2(kInstance.camPos().x + 2, kInstance.camPos().y));
+      }
+      );
+      kInstance.onKeyDown("d", () => {
+        kInstance.camPos(kInstance.vec2(kInstance.camPos().x - 2, kInstance.camPos().y));
+      }
+      );
+      kInstance.onKeyDown("r", () => {
+        kInstance.camPos(kInstance.vec2(0, 0));
+      }
+      );
+    
 
     });
   }, [currentInput]);
