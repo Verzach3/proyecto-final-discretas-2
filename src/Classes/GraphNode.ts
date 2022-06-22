@@ -1,17 +1,17 @@
 export class GraphNode {
   private id: string;
-  private childs: Node[] = [];
+  private childs: GraphNode[] = [];
   private type: "free" | "wall" | "start" | "recicle" | "3kilos" | "2kilos" = "free";
-  constructor(id: string, childs?: Node[]) {
+  constructor(id: string, childs?: GraphNode[]) {
     this.id = id;
     childs !== undefined ? (this.childs = childs) : null;
   }
 
-  addChild(child: Node): void {
+  addChild(child: GraphNode): void {
     this.childs.push(child);
   }
 
-  getChilds(): Node[] {
+  getChilds(): GraphNode[] {
     return this.childs;
   }
   
