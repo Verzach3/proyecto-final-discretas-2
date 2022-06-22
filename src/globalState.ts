@@ -6,7 +6,7 @@ export const globalKaboom = atom<KaboomCtx | undefined>({
   default: undefined
 })
 
-export const currentInputText = atom<string | undefined>({
+export const currentInputText = atom<(number | string[])[] | undefined>({
   key: "InputText",
   default: undefined
 })

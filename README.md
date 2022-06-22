@@ -11,7 +11,7 @@ Proyecto final del curso Matematicas Discretas II
 
 ### Requisitos
 
-- `nodejs 16.5.1`
+- `nodejs 16.15.1`
 - `yarn 1.22.19`
 
 ### Instrucciones
