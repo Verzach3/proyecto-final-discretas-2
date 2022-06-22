@@ -5,6 +5,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { dropzoneChildren } from "./Components/DropzoneChildren";
 import Game from "./Components/Game";
 import { currentInputText, globalKaboom } from "./State/globalState";
+import { graphFromInput } from "./Util/graphFromInput";
 import { parseInputFileText } from "./Util/textParser";
 
 function App() {
@@ -22,11 +23,15 @@ function App() {
           </Button>
           <Button onClick={() => console.log("tets")}>Cargar Archivo</Button>
           <Dropzone
-            onDrop={async (files) =>
+            onDrop={async (files) =>{
+              const parsedInput = parseInputFileText(await files[0].text());
+              setInputText(parseInputFileText(await files[0].text()))
+              graphFromInput(parsedInput);
               console.log(
                 "file content\n",
-                setInputText(parseInputFileText(await files[0].text()))
-              )
+                parseInputFileText(await files[0].text())
+                )
+              }
             }
             onReject={(files) => console.log("rejected files", files)}
             maxSize={3 * 1024 ** 2}
