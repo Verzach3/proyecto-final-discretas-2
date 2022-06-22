@@ -2,10 +2,10 @@ import { AppShell, Button, Navbar, Text, useMantineTheme } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { dropzoneChildren } from "./DropzoneChildren";
-import Game from "./Game";
-import { currentInputText, globalKaboom } from "./globalState";
-import { parseInputFileText } from "./textParser";
+import { dropzoneChildren } from "./Components/DropzoneChildren";
+import Game from "./Components/Game";
+import { currentInputText, globalKaboom } from "./State/globalState";
+import { parseInputFileText } from "./Util/textParser";
 
 function App() {
   const kInstance = useRecoilValue(globalKaboom);

@@ -3,7 +3,7 @@ import { randomId } from "@mantine/hooks";
 import kaboom, { KaboomCtx } from "kaboom";
 import React, { useEffect, useRef, useState } from "react";
 import { atom, useRecoilState } from "recoil";
-import { globalKaboom } from "./globalState";
+import { globalKaboom } from "../State/globalState";
 
 function Game() {
   const [kInstance, setKInstance] = useRecoilState(globalKaboom);
