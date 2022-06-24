@@ -14,9 +14,11 @@ export function graphFromInput(input: [size: number, gridData: number[][]]) {
 
   const nodes = new Map<string, GraphNode>();
   let startNodeId: string | undefined;
+  let mapString = [];
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       const node = new GraphNode(`${i}-${j}`);
+      mapString.push(node.getId());
       switch (gridData[i][j]) {
         case 1:
           node.setType("wall");
@@ -40,7 +42,7 @@ export function graphFromInput(input: [size: number, gridData: number[][]]) {
       nodes.set(node.getId(), node);
     }
   }
-
+  console.log("map",mapString);
   // add the nodes to the childs if they are not walls and are adjacent to the node
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {

@@ -1,14 +1,13 @@
 import { Button, Center } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
-import kaboom, { KaboomCtx } from "kaboom";
-import React, { useEffect, useRef, useState } from "react";
-import { atom, useRecoilState, useRecoilValue } from "recoil";
+import kaboom from "kaboom";
+import React, { useEffect, useRef} from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { currentInputText, globalKaboom } from "../State/globalState";
-import floordemo from "../Resources/floordemo.png";
 import { loadSprites } from "../Util/loadSprites";
 
 function Game() {
-  const [kInstance, setKInstance] = useRecoilState(globalKaboom);
+  const [K, setKInstance] = useRecoilState(globalKaboom);
   const currentInput = useRecoilValue(currentInputText);
   // Convert the number grid to string grid
   let stringGrid: string[] | undefined = undefined;
@@ -25,9 +24,8 @@ function Game() {
         kaboom({
           global: false,
           canvas: canvas.current,
-          width: 800,
-          height: 600,
-          background: [255, 255, 255],
+
+          // background: [255, 255, 255],
         })
       );
     }
@@ -35,64 +33,52 @@ function Game() {
   }, [canvas]);
 
   useEffect(() => {
-    if (kInstance === null || kInstance === undefined) {
+    if (K === null || K === undefined) {
       return;
     }
-    loadSprites(kInstance).then(() => {
-      stringGrid = currentInput![1].map((row) =>
+    loadSprites(K).then(() => {
+      stringGrid = currentInput![1]!.map((row) =>
         row.map((cell) => cell.toString()).join("")
       );
-      kInstance.addLevel(stringGrid, {
+      const currentLevel = K.addLevel(stringGrid, {
         width: 32,
         height: 32,
-        "0": () => [kInstance.sprite("floor")],
-        "1": () => [kInstance.sprite("wall")],
-        "2": () => [kInstance.sprite("2kilos")],
-        "3": () => [kInstance.sprite("3kilos")],
-        "4": () => [kInstance.sprite("start")],
-        "5": () => [kInstance.sprite("recicle")],
+        "0": () => [K.sprite("floor"), "structure"],
+        "1": () => [K.sprite("wall"), "structure"],
+        "2": () => [K.sprite("2kilos"), "structure"],
+        "3": () => [K.sprite("3kilos"), "structure"],
+        "4": () => [K.sprite("start"), "structure", "startpoint"],
+        "5": () => [K.sprite("recicle"), "structure", "endpoint"],
       });
       
-      kInstance.onKeyPress("x", () => {
-        kInstance.camScale(kInstance.vec2(kInstance.camScale().x * 1.1, kInstance.camScale().y * 1.1)); 
+      K.onKeyPress("x", () => {
+        K.camScale(K.vec2(K.camScale().x * 1.1, K.camScale().y * 1.1)); 
       });
-      kInstance.onKeyPress("z", () => {
-        kInstance.camScale(kInstance.vec2(kInstance.camScale().x * 0.9, kInstance.camScale().y * 0.9));
+      K.onKeyPress("z", () => {
+        K.camScale(K.vec2(K.camScale().x * 0.9, K.camScale().y * 0.9));
       }
       );
 
-      //move the camera with wasd
-      kInstance.onKeyDown("w", () => {
-        kInstance.camPos(kInstance.vec2(kInstance.camPos().x, kInstance.camPos().y + 2));
-      }
-      );
-      kInstance.onKeyDown("s", () => {
-        kInstance.camPos(kInstance.vec2(kInstance.camPos().x, kInstance.camPos().y - 2));
-      }
-      );
-      kInstance.onKeyDown("a", () => {
-        kInstance.camPos(kInstance.vec2(kInstance.camPos().x + 2, kInstance.camPos().y));
-      }
-      );
-      kInstance.onKeyDown("d", () => {
-        kInstance.camPos(kInstance.vec2(kInstance.camPos().x - 2, kInstance.camPos().y));
-      }
-      );
-      kInstance.onKeyDown("r", () => {
-        kInstance.camPos(kInstance.vec2(0, 0));
-      }
-      );
-    
+      K.debug.log(currentLevel.getPos(0,5).toString())
+
+      K.onMouseMove((pos) => {
+        K.debug.log(K.camPos().toString())
+        K.camPos(K.vec2(pos.x/2, pos.y/2));
+      })
+      
+      K.add([
+        K.sprite("player"),
+        K.pos(currentLevel.getPos(0,4)),
+        "player"
+      ])
 
     });
   }, [currentInput]);
 
   return (
-    <div>
-      <Center>
-        <canvas ref={canvas} />
+      <Center >
+        <canvas style={{height: "90vh", width: "80vw"}} ref={canvas} />
       </Center>
-    </div>
   );
 }
 

@@ -7,6 +7,7 @@ import Game from "./Components/Game";
 import { currentInputText, globalKaboom } from "./State/globalState";
 import { graphFromInput } from "./Util/graphFromInput";
 import { parseInputFileText } from "./Util/textParser";
+import { documentExample } from "./Util/exampleInputs";
 
 function App() {
   const kInstance = useRecoilValue(globalKaboom);
@@ -21,18 +22,27 @@ function App() {
           <Button my={"xs"} onClick={() => kInstance!.debug.log("Hi")}>
             Cargar Archivo
           </Button>
-          <Button onClick={() => console.log("tets")}>Cargar Archivo</Button>
+          <Button my={"xs"} onClick={() => kInstance!.destroyAll("structure")}>
+            Destroy All
+          </Button>
+          <Button
+            onClick={() => {
+              setInputText(parseInputFileText(documentExample));
+              graphFromInput(parseInputFileText(documentExample));
+            }}
+          >
+            Load Document Example
+          </Button>
           <Dropzone
-            onDrop={async (files) =>{
+            onDrop={async (files) => {
               const parsedInput = parseInputFileText(await files[0].text());
-              setInputText(parseInputFileText(await files[0].text()))
+              setInputText(parseInputFileText(await files[0].text()));
               graphFromInput(parsedInput);
               console.log(
                 "file content\n",
                 parseInputFileText(await files[0].text())
-                )
-              }
-            }
+              );
+            }}
             onReject={(files) => console.log("rejected files", files)}
             maxSize={3 * 1024 ** 2}
             accept={["text/plain"]}
