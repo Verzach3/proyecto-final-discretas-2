@@ -68,11 +68,11 @@ function Game() {
         K.camPos(K.vec2(pos.x/2, pos.y/2));
       })
       
-      K.add([
-        K.sprite("player"),
-        K.pos(currentLevel.getPos(0,4)),
-        "player"
-      ])
+      // K.add([
+      //   K.sprite("player"),
+      //   K.pos(currentLevel.getPos(0,4)),
+      //   "player"
+      // ])
 
     });
   }, [currentInput]);

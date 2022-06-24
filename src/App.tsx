@@ -1,6 +1,6 @@
 import { AppShell, Button, Navbar, Text, useMantineTheme } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dropzoneChildren } from "./Components/DropzoneChildren";
 import Game from "./Components/Game";
@@ -18,9 +18,18 @@ import { dfsOnGraph } from "./Util/dfs";
 function App() {
   const K = useRecoilValue(globalKaboom);
   const [inputText, setInputText] = useRecoilState(currentInputText);
-  const level = useRecoilValue(currentLevel)
+  const level = useRecoilValue(currentLevel);
   const [graph, setGraph] = useRecoilState(currentGraph);
   const theme = useMantineTheme();
+  const [lastsetpos, setLastsetpos] = useState([0, 0]);
+
+  useEffect(() => {
+    if (!level || !K) return;
+    K!.add([
+      K!.sprite("player"),
+      K!.pos(level!.getPos(K!.vec2(lastsetpos[1], lastsetpos[0]))),
+    ]);
+  }, [level]);
   return (
     <AppShell
       padding={"md"}
@@ -42,14 +51,10 @@ function App() {
               );
               if (loadedGraph !== undefined) {
                 setGraph(loadedGraph);
-                const dfsresult = dfsOnGraph(loadedGraph, "recicle");
+                const dfsresult = dfsOnGraph(loadedGraph, "3kilos");
                 console.log(dfsresult);
-                const lastsetpos = [...dfsresult].pop()!.split("-").map(Number)
-                if (!level) return
-                K!.add([
-                  K!.sprite("player"),
-                  K!.pos(level!.getPos(K!.vec2(lastsetpos[0], lastsetpos[1]))),
-                ])
+                const lastsetpos = [...dfsresult].pop()!.split("-").map(Number);
+                setLastsetpos(lastsetpos);
               }
             }}
           >

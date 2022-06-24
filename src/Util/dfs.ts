@@ -6,7 +6,6 @@ export function dfsOnGraph(graph: GraphNode, type: GraphTypes){
   
   let found = false;
   function dfs(graph: GraphNode){
-    console.log(type, "-", graph.getType(),type === graph.getType())
     if(found){
       return;
     }
