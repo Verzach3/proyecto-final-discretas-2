@@ -35,6 +35,7 @@ export function graphFromInput(input: [size: number, gridData: number[][]]) {
           break;
         case 5:
           node.setType("recicle");
+          break;
         default:
           node.setType("free");
           break;

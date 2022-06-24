@@ -27,3 +27,5 @@ export class GraphNode {
     return this.type;
   }
 }
+
+export type GraphTypes = "free" | "wall" | "start" | "recicle" | "3kilos" | "2kilos"

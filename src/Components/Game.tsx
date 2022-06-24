@@ -3,12 +3,13 @@ import { randomId } from "@mantine/hooks";
 import kaboom from "kaboom";
 import React, { useEffect, useRef} from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { currentInputText, globalKaboom } from "../State/globalState";
+import { currentInputText, currentLevel, globalKaboom } from "../State/globalState";
 import { loadSprites } from "../Util/loadSprites";
 
 function Game() {
   const [K, setKInstance] = useRecoilState(globalKaboom);
   const currentInput = useRecoilValue(currentInputText);
+  const [level, setLevel] = useRecoilState(currentLevel);
   // Convert the number grid to string grid
   let stringGrid: string[] | undefined = undefined;
   const canvas = useRef(null);
@@ -40,6 +41,7 @@ function Game() {
       stringGrid = currentInput![1]!.map((row) =>
         row.map((cell) => cell.toString()).join("")
       );
+      K.destroyAll("structure");
       const currentLevel = K.addLevel(stringGrid, {
         width: 32,
         height: 32,
@@ -50,7 +52,7 @@ function Game() {
         "4": () => [K.sprite("start"), "structure", "startpoint"],
         "5": () => [K.sprite("recicle"), "structure", "endpoint"],
       });
-      
+      setLevel(currentLevel);
       K.onKeyPress("x", () => {
         K.camScale(K.vec2(K.camScale().x * 1.1, K.camScale().y * 1.1)); 
       });

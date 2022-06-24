@@ -1,9 +1,28 @@
-import { GraphNode } from "../Classes/GraphNode";
+import { GraphNode, GraphTypes } from "../Classes/GraphNode";
 
-// a function to seach for a type of graphNode in a graph and return the path to it
-export function searchOnGraph(graph: GraphNode, type: string){
-  const visited = new Set<GraphNode>();
+// dfs search on a GraphNode
+export function dfsOnGraph(graph: GraphNode, type: GraphTypes){
+  let visited = new Set<String>();
   
-  
-
+  let found = false;
+  function dfs(graph: GraphNode){
+    console.log(type, "-", graph.getType(),type === graph.getType())
+    if(found){
+      return;
+    }
+    if(visited.has(graph.getId())){
+      return;
+    }
+    visited.add(graph.getId());
+    if (graph.getType() === type){
+      found = true;
+      console.log("found", graph.getId());
+      return;
+    }
+    graph.getChilds().forEach(child => {
+      dfs(child);
+    }); 
+  }
+  dfs(graph);
+  return visited;
 }

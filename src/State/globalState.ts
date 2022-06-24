@@ -1,4 +1,4 @@
-import { KaboomCtx } from "kaboom";
+import { KaboomCtx, Level } from "kaboom";
 import { atom } from "recoil";
 import { GraphNode } from "../Classes/GraphNode";
 
@@ -14,5 +14,10 @@ export const currentInputText = atom<[number, number[][]] | undefined>({
 
 export const currentGraph = atom<GraphNode | undefined>({
   key: "CurrentGraph",
+  default: undefined,
+});
+
+export const currentLevel = atom<Level | undefined>({
+  key: "CurrentLevel",
   default: undefined,
 });

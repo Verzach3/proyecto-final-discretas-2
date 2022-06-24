@@ -4,14 +4,22 @@ import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dropzoneChildren } from "./Components/DropzoneChildren";
 import Game from "./Components/Game";
-import { currentInputText, globalKaboom } from "./State/globalState";
+import {
+  currentGraph,
+  currentInputText,
+  currentLevel,
+  globalKaboom,
+} from "./State/globalState";
 import { graphFromInput } from "./Util/graphFromInput";
 import { parseInputFileText } from "./Util/textParser";
 import { documentExample } from "./Util/exampleInputs";
+import { dfsOnGraph } from "./Util/dfs";
 
 function App() {
-  const kInstance = useRecoilValue(globalKaboom);
+  const K = useRecoilValue(globalKaboom);
   const [inputText, setInputText] = useRecoilState(currentInputText);
+  const level = useRecoilValue(currentLevel)
+  const [graph, setGraph] = useRecoilState(currentGraph);
   const theme = useMantineTheme();
   return (
     <AppShell
@@ -19,16 +27,30 @@ function App() {
       navbar={
         <Navbar p="md" width={{ sm: 200, lg: 300 }}>
           <Text mt={"xs"}>Log On Kaboom</Text>
-          <Button my={"xs"} onClick={() => kInstance!.debug.log("Hi")}>
+          <Button my={"xs"} onClick={() => K!.debug.log("Hi")}>
             Cargar Archivo
           </Button>
-          <Button my={"xs"} onClick={() => kInstance!.destroyAll("structure")}>
+          <Button my={"xs"} onClick={() => K!.destroyAll("structure")}>
             Destroy All
           </Button>
           <Button
             onClick={() => {
               setInputText(parseInputFileText(documentExample));
-              graphFromInput(parseInputFileText(documentExample));
+
+              const loadedGraph = graphFromInput(
+                parseInputFileText(documentExample)
+              );
+              if (loadedGraph !== undefined) {
+                setGraph(loadedGraph);
+                const dfsresult = dfsOnGraph(loadedGraph, "recicle");
+                console.log(dfsresult);
+                const lastsetpos = [...dfsresult].pop()!.split("-").map(Number)
+                if (!level) return
+                K!.add([
+                  K!.sprite("player"),
+                  K!.pos(level!.getPos(K!.vec2(lastsetpos[0], lastsetpos[1]))),
+                ])
+              }
             }}
           >
             Load Document Example
@@ -37,7 +59,11 @@ function App() {
             onDrop={async (files) => {
               const parsedInput = parseInputFileText(await files[0].text());
               setInputText(parseInputFileText(await files[0].text()));
-              graphFromInput(parsedInput);
+              const loadedGraph = graphFromInput(parsedInput);
+              if (loadedGraph !== undefined) {
+                setGraph(loadedGraph);
+                console.log(dfsOnGraph(loadedGraph, "recicle"));
+              }
               console.log(
                 "file content\n",
                 parseInputFileText(await files[0].text())
