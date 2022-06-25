@@ -1,9 +1,9 @@
 import { GraphNode, GraphTypes } from "../Classes/GraphNode";
 
 // dfs search on a GraphNode
-export function dfsOnGraph(graph: GraphNode, type: GraphTypes){
+export function dfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, GraphNode | undefined] {
   let visited = new Set<string>();
-  
+  let finalGraph: GraphNode | undefined= undefined
   let found = false;
   function dfs(graph: GraphNode){
     if(found){
@@ -15,6 +15,7 @@ export function dfsOnGraph(graph: GraphNode, type: GraphTypes){
     visited.add(graph.getId());
     if (graph.getType() === type){
       found = true;
+      finalGraph = graph;
       console.log("found", graph.getId());
       return;
     }
@@ -23,5 +24,5 @@ export function dfsOnGraph(graph: GraphNode, type: GraphTypes){
     }); 
   }
   dfs(graph);
-  return visited;
+  return [visited, finalGraph];
 }

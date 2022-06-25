@@ -45,7 +45,6 @@ function App() {
   const theme = useMantineTheme();
   const [selectedAlgo, setSelectedAlgo] = useState<"DFS" | "BFS">("DFS");
   const [results, setResults] = useState<string[]>([]);
-  const [lastsetpos, setLastsetpos] = useState([0, 0]);
   const [playerPos, setPlayerPos] = useState([0, 0]);
   const [player, setPlayer] = useState<
     GameObj<SpriteComp | PosComp> | undefined
@@ -61,8 +60,11 @@ function App() {
         K!.pos(level.getPos(newPos[1], newPos[0])),
       ])
     );
-  }, [level]);
+    }, [level]);
 
+  useEffect(() => {
+    console.log(results);
+  }, [results]);
   return (
     <AppShell
       padding={"md"}
@@ -82,11 +84,11 @@ function App() {
               );
               if (loadedGraph !== undefined) {
                 setGraph(loadedGraph);
-                const dfsresult = dfsOnGraph(loadedGraph, "3kilos");
-                setResults([...dfsresult]);
+
+                const [dfsresult, endGraph ]= dfsOnGraph(loadedGraph, "3kilos");
+                const dfsresult2 = dfsOnGraph(endGraph!, "2kilos")[0];
+                setResults([...dfsresult! ,...dfsresult2!]);
                 console.log(dfsresult);
-                const lastsetpos = [...dfsresult].pop()!.split("-").map(Number);
-                setLastsetpos(lastsetpos);
 
                 
               }
