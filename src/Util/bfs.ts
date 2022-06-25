@@ -34,6 +34,7 @@ export function bfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, Gr
       return;
     }
 
+    //Genera el grafo haciendo las conexiones entre nodos correspondiente
     for (let i = graph.getChilds().length - 1; i >= 0; i--) {
       bfs(graph.getChilds()[i]);
     }
