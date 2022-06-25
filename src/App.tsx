@@ -36,6 +36,7 @@ import {
 } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { GameObj, PosComp, SpriteComp } from "kaboom";
+import { bfsOnGraph } from "./Util/bfs";
 
 function App() {
   const K = useRecoilValue(globalKaboom);
@@ -53,17 +54,14 @@ function App() {
   const posToVec2 = (pos: [number, number]) => K!.vec2(pos[0], pos[1]);
   useEffect(() => {
     if (!level || !K) return;
-    const newPos = results![0]!.split("-").map(Number)
+    const newPos = results![0]!.split("-").map(Number);
     setPlayer(
-      K!.add([
-        K!.sprite("player"),
-        K!.pos(level.getPos(newPos[1], newPos[0])),
-      ])
+      K!.add([K!.sprite("player"), K!.pos(level.getPos(newPos[1], newPos[0]))])
     );
-    }, [level]);
+  }, [level]);
 
   useEffect(() => {
-    console.log(results);
+    console.log("results", results);
   }, [results]);
   return (
     <AppShell
@@ -84,13 +82,35 @@ function App() {
               );
               if (loadedGraph !== undefined) {
                 setGraph(loadedGraph);
-
-                const [dfsresult, endGraph ]= dfsOnGraph(loadedGraph, "3kilos");
-                const dfsresult2 = dfsOnGraph(endGraph!, "2kilos")[0];
-                setResults([...dfsresult! ,...dfsresult2!]);
-                console.log(dfsresult);
-
-                
+                if (selectedAlgo === "DFS") {
+                  const [threekilosResult, threekilosEndGraph] = dfsOnGraph(
+                    loadedGraph,
+                    "3kilos"
+                  );
+                  const [twokilosResult, twokilosEndGraph] = dfsOnGraph(
+                    threekilosEndGraph!,
+                    "2kilos"
+                  );
+                  const [recicleResult, recicleEndGraph, recicleEndPath] =
+                    dfsOnGraph(twokilosEndGraph!, "recicle");
+                  setResults([...threekilosResult, ...twokilosResult, ...recicleResult]);
+                  console.log(recicleEndGraph);
+                }
+                if (selectedAlgo === "BFS") {
+                  console.log("BFS");
+                  const [threekilosResult, threekilosEndGraph, threeKilosPath] = bfsOnGraph(
+                    loadedGraph,
+                    "3kilos"
+                  );
+                  const [twokilosResult, twokilosEndGraph] = bfsOnGraph(
+                    threekilosEndGraph!,
+                    "2kilos"
+                  );
+                  const [recicleResult, recicleEndGraph] =
+                    bfsOnGraph(twokilosEndGraph!, "recicle");
+                  setResults([...threeKilosPath, ...twokilosResult, ...recicleResult]);
+                  console.log(recicleEndGraph);
+                }
               }
             }}
           >
@@ -109,8 +129,8 @@ function App() {
                 player!.moveTo(level!.getPos(newPos[1], newPos[0]));
                 console.log(player!.pos, currentResultIndex);
                 setCurrentResultIndex((x) => {
-                  if (x === results.length - 1) return 0;
-                  return x + 1;
+                  if (x === 0) return results.length - 1;
+                  return x - 1;
                 });
               }}
             >
@@ -128,8 +148,8 @@ function App() {
                 player!.moveTo(level!.getPos(newPos[1], newPos[0]));
                 console.log(player!.pos, currentResultIndex);
                 setCurrentResultIndex((x) => {
-                  if (x === 0) return results.length - 1;
-                  return x - 1;
+                  if (x === results.length - 1) return 0;
+                  return x + 1;
                 });
               }}
             >
