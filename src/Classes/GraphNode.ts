@@ -29,3 +29,5 @@ export class GraphNode {
 }
 
 export type GraphTypes = "free" | "wall" | "start" | "recicle" | "3kilos" | "2kilos"
+
+//Cambio
