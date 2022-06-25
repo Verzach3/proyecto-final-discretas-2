@@ -13,30 +13,31 @@ export function bfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, Gr
   let path: string[] = [];
   let finalGraph: GraphNode | undefined = undefined;
   let found = false;
-  let queue: GraphNode[] = [];
-  queue.push(graph);
-  while (queue.length > 0) {
-    let current = queue.shift();
-    if(current === undefined) {
-      continue;
+  function bfs(graph: GraphNode) {
+    console.log("visiting", graph.getId());
+    path.push(graph.getId());
+    //Si el nodo de tipo GraphNode es encontrado lo retorna para agregarlo al arreglo de nodos visitados
+    if (found) {
+      return;
     }
-    console.log("visiting", visited);
+    path.push(graph.getId());
+    if (visited.has(graph.getId())) {
+      return;
+    }
+    visited.add(graph.getId());
 
-    //Si el id actual ya ha sido visitado, es agregado al set de los visitatods
-    if (visited.has(current.getId())) {
-      continue;
-    }
-    visited.add(current.getId());
-    if (current.getType() === type) {
+    //Obtiene el tipo de nodo y lo determina como visitado
+    if (graph.getType() === type) {
       found = true;
-      finalGraph = current;
-      break;
+      finalGraph = graph;
+      console.log("found", graph.getId());
+      return;
     }
 
-    //Recorre el set de nodos para generar el grafo
-    for (let i = 0; i < current.getChilds().length; i++) {
-      queue.push(current.getChilds()[i]);
+    for (let i = graph.getChilds().length - 1; i >= 0; i--) {
+      bfs(graph.getChilds()[i]);
     }
   }
+  bfs(graph);
   return [visited, finalGraph, path];
 }
