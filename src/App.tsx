@@ -85,11 +85,7 @@ function App() {
       padding={"md"}
       navbar={
         <Navbar p="md" width={{ sm: 200, lg: 300 }}>
-          <Text my={"xs"}>Log On Kaboom</Text>
           <Button onClick={() => K!.debug.log("Hi")}>Cargar Archivo</Button>
-          <Button my={"xs"} onClick={() => K!.destroyAll("structure")}>
-            Destroy All
-          </Button>
           <Button
             onClick={() => {
               setInputText(parseInputFileText(documentExample));
@@ -100,7 +96,7 @@ function App() {
               fileAux(loadedGraph, setGraph, selectedAlgo, setResults);
             }}
           >
-            Load Document Example
+            Cargar Ejemplo
           </Button>
           <Center my={"xs"}>
             <ActionIcon
@@ -172,7 +168,7 @@ function App() {
             >
               DFS
             </Button>
-          </Center>
+          </Center> 
           <Dropzone
             my={"xs"}
             style={{ alignItems: "flex-end" }}
