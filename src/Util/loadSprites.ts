@@ -1,3 +1,9 @@
+/*
+Gabriel Correa Cardenas - 202073013
+Juan Camilo Varela Ocoró - 202060166
+--------------------------------------------------------------------------------
+*/
+
 import { KaboomCtx } from "kaboom";
 import floor from "../Resources/floor.png"
 import wall from "../Resources/wall.png"

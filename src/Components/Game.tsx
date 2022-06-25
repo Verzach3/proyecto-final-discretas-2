@@ -1,3 +1,12 @@
+/*
+Gabriel Correa Cardenas - 202073013
+Juan Camilo Varela Ocoró - 202060166
+--------------------------------------------------------------------------------
+*/
+
+/*Se importan componentes de las librerias mantine, recoil y kaboom 
+Kaboom: es usado para la representación gráfica del funcionamiento del programa
+Recoil: es usado para manejar los estados de algunas variables en todo el programa*/
 import { Button, Center } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
 import kaboom from "kaboom";
@@ -6,14 +15,19 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { currentInputText, currentLevel, globalKaboom } from "../State/globalState";
 import { loadSprites } from "../Util/loadSprites";
 
+/*Se defina la función "Game" encargada de crear el canvas para kaboom sobre el que se dibujarán los recursos 
+usados para la representación gráfica*/
 function Game() {
   const [K, setKInstance] = useRecoilState(globalKaboom);
   const currentInput = useRecoilValue(currentInputText);
   const [level, setLevel] = useRecoilState(currentLevel);
-  // Convert the number grid to string grid
+
+  // Convierte la cuadrícula de números en cuadrícula de Strings
   let stringGrid: string[] | undefined = undefined;
   const canvas = useRef(null);
   console.log(canvas);
+
+  //Ejecuta una función cuando cambia una de las dependencias
   useEffect(() => {
     if (canvas.current === null) {
     }

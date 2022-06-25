@@ -1,3 +1,9 @@
+/*
+Gabriel Correa Cardenas - 202073013
+Juan Camilo Varela Ocoró - 202060166
+--------------------------------------------------------------------------------
+*/
+
 export const documentExample = `10
 0002000000
 0110111110

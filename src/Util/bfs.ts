@@ -1,3 +1,9 @@
+/*
+Gabriel Correa Cardenas - 202073013
+Juan Camilo Varela Ocoró - 202060166
+--------------------------------------------------------------------------------
+*/
+
 import { GraphNode, GraphTypes } from "../Classes/GraphNode";
 
 export function bfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, GraphNode | undefined, string[]] {
