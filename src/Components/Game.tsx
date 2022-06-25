@@ -67,7 +67,7 @@ function Game() {
         if(K.isMouseDown()){
 
           K.debug.log(K.camPos().toString())
-          K.camPos(K.vec2(pos.x/2, pos.y/2));
+          K.camPos(K.vec2(pos.x/3 , pos.y/2));
         }
       })
       

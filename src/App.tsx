@@ -54,10 +54,11 @@ function App() {
   const posToVec2 = (pos: [number, number]) => K!.vec2(pos[0], pos[1]);
   useEffect(() => {
     if (!level || !K) return;
+    const newPos = results![0]!.split("-").map(Number)
     setPlayer(
       K!.add([
         K!.sprite("player"),
-        K!.pos(level!.getPos(K!.vec2(lastsetpos[1], lastsetpos[0]))),
+        K!.pos(level.getPos(newPos[1], newPos[0])),
       ])
     );
   }, [level]);
@@ -87,7 +88,7 @@ function App() {
                 const lastsetpos = [...dfsresult].pop()!.split("-").map(Number);
                 setLastsetpos(lastsetpos);
 
-                setPlayerPos([...dfsresult][0].split("-")!.map(Number));
+                
               }
             }}
           >
