@@ -2,7 +2,7 @@ import { GraphNode, GraphTypes } from "../Classes/GraphNode";
 
 // dfs search on a GraphNode
 export function dfsOnGraph(graph: GraphNode, type: GraphTypes){
-  let visited = new Set<String>();
+  let visited = new Set<string>();
   
   let found = false;
   function dfs(graph: GraphNode){

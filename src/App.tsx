@@ -35,6 +35,7 @@ import {
   Search,
 } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
+import { GameObj, PosComp, SpriteComp } from "kaboom";
 
 function App() {
   const K = useRecoilValue(globalKaboom);
@@ -44,16 +45,21 @@ function App() {
   const theme = useMantineTheme();
   const [selectedAlgo, setSelectedAlgo] = useState<"DFS" | "BFS">("DFS");
   const [results, setResults] = useState<string[]>([]);
-  const [currentPos, setCurrentPos] = useState<[number, number]>([0, 0]);
   const [lastsetpos, setLastsetpos] = useState([0, 0]);
   const [playerPos, setPlayerPos] = useState([0, 0]);
-
+  const [player, setPlayer] = useState<
+    GameObj<SpriteComp | PosComp> | undefined
+  >(undefined);
+  const [currentResultIndex, setCurrentResultIndex] = useState(0);
+  const posToVec2 = (pos: [number, number]) => K!.vec2(pos[0], pos[1]);
   useEffect(() => {
     if (!level || !K) return;
-    K!.add([
-      K!.sprite("player"),
-      K!.pos(level!.getPos(K!.vec2(lastsetpos[1], lastsetpos[0]))),
-    ]);
+    setPlayer(
+      K!.add([
+        K!.sprite("player"),
+        K!.pos(level!.getPos(K!.vec2(lastsetpos[1], lastsetpos[0]))),
+      ])
+    );
   }, [level]);
 
   return (
@@ -76,9 +82,11 @@ function App() {
               if (loadedGraph !== undefined) {
                 setGraph(loadedGraph);
                 const dfsresult = dfsOnGraph(loadedGraph, "3kilos");
+                setResults([...dfsresult]);
                 console.log(dfsresult);
                 const lastsetpos = [...dfsresult].pop()!.split("-").map(Number);
                 setLastsetpos(lastsetpos);
+
                 setPlayerPos([...dfsresult][0].split("-")!.map(Number));
               }
             }}
@@ -91,6 +99,17 @@ function App() {
               variant="filled"
               color={"blue"}
               style={{ marginRight: 5, width: "49%" }}
+              onClick={() => {
+                const newPos = results[currentResultIndex]
+                  .split("-")!
+                  .map(Number);
+                player!.moveTo(level!.getPos(newPos[1], newPos[0]));
+                console.log(player!.pos, currentResultIndex);
+                setCurrentResultIndex((x) => {
+                  if (x === results.length - 1) return 0;
+                  return x + 1;
+                });
+              }}
             >
               <ArrowBigLeft />
             </ActionIcon>
@@ -99,6 +118,17 @@ function App() {
               variant="filled"
               color={"blue"}
               style={{ marginLeft: 5, width: "49%" }}
+              onClick={() => {
+                const newPos = results[currentResultIndex]
+                  .split("-")!
+                  .map(Number);
+                player!.moveTo(level!.getPos(newPos[1], newPos[0]));
+                console.log(player!.pos, currentResultIndex);
+                setCurrentResultIndex((x) => {
+                  if (x === 0) return results.length - 1;
+                  return x - 1;
+                });
+              }}
             >
               <ArrowBigRight />
             </ActionIcon>
