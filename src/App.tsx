@@ -11,7 +11,7 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
+import { Dropzone } from "@mantine/dropzone";
 import React, { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dropzoneChildren } from "./Components/DropzoneChildren";
@@ -35,8 +35,9 @@ import {
   Search,
 } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
-import { GameObj, PosComp, SpriteComp } from "kaboom";
+import { GameObj, PosComp, SpriteComp, Vec2 } from "kaboom";
 import { bfsOnGraph } from "./Util/bfs";
+import { GraphNode } from "c:/Users/Verzach3/Proyectos/proyecto-final-discretas-2/src/Classes/GraphNode";
 
 function App() {
   const K = useRecoilValue(globalKaboom);
@@ -45,24 +46,40 @@ function App() {
   const [graph, setGraph] = useRecoilState(currentGraph);
   const theme = useMantineTheme();
   const [selectedAlgo, setSelectedAlgo] = useState<"DFS" | "BFS">("DFS");
-  const [results, setResults] = useState<string[]>([]);
-  const [playerPos, setPlayerPos] = useState([0, 0]);
+  const [results, setResults] = useState<string[]>([""]);
+  const [playerPos, setPlayerPos] = useState<Vec2 | undefined>(undefined);
   const [player, setPlayer] = useState<
     GameObj<SpriteComp | PosComp> | undefined
   >(undefined);
   const [currentResultIndex, setCurrentResultIndex] = useState(0);
-  const posToVec2 = (pos: [number, number]) => K!.vec2(pos[0], pos[1]);
   useEffect(() => {
     if (!level || !K) return;
-    const newPos = results![0]!.split("-").map(Number);
+    if(results === undefined) return;
+    const newPos = results![0]!.split("-")!.map(Number);
+    const newPlayer = K!.add([K!.sprite("player"), K!.pos(level.getPos(newPos[1], newPos[0])), K!.area(), K!.z(1000), "structure"]);
+    // newPlayer.onCollide("2kg", () => {
+    //   K!.add([
+    //     K!.sprite("floor"),
+    //     K!.pos(newPlayer.pos)
+    //   ])
+    //   K!.destroyAll("2kg")
+    // })
     setPlayer(
-      K!.add([K!.sprite("player"), K!.pos(level.getPos(newPos[1], newPos[0]))])
+      newPlayer
     );
   }, [level]);
 
   useEffect(() => {
     console.log("results", results);
   }, [results]);
+
+  useEffect(() => {
+    console.log("pp",playerPos);
+    if(player === undefined) return;
+    console.log("pp2",player!.pos!);
+    player.moveTo(playerPos!);
+  }
+  , [playerPos]);
   return (
     <AppShell
       padding={"md"}
@@ -80,38 +97,7 @@ function App() {
               const loadedGraph = graphFromInput(
                 parseInputFileText(documentExample)
               );
-              if (loadedGraph !== undefined) {
-                setGraph(loadedGraph);
-                if (selectedAlgo === "DFS") {
-                  const [threekilosResult, threekilosEndGraph] = dfsOnGraph(
-                    loadedGraph,
-                    "3kilos"
-                  );
-                  const [twokilosResult, twokilosEndGraph] = dfsOnGraph(
-                    threekilosEndGraph!,
-                    "2kilos"
-                  );
-                  const [recicleResult, recicleEndGraph, recicleEndPath] =
-                    dfsOnGraph(twokilosEndGraph!, "recicle");
-                  setResults([...threekilosResult, ...twokilosResult, ...recicleResult]);
-                  console.log(recicleEndGraph);
-                }
-                if (selectedAlgo === "BFS") {
-                  console.log("BFS");
-                  const [threekilosResult, threekilosEndGraph, threeKilosPath] = bfsOnGraph(
-                    loadedGraph,
-                    "3kilos"
-                  );
-                  const [twokilosResult, twokilosEndGraph] = bfsOnGraph(
-                    threekilosEndGraph!,
-                    "2kilos"
-                  );
-                  const [recicleResult, recicleEndGraph] =
-                    bfsOnGraph(twokilosEndGraph!, "recicle");
-                  setResults([...threeKilosPath, ...twokilosResult, ...recicleResult]);
-                  console.log(recicleEndGraph);
-                }
-              }
+              fileAux(loadedGraph, setGraph, selectedAlgo, setResults);
             }}
           >
             Load Document Example
@@ -123,15 +109,16 @@ function App() {
               color={"blue"}
               style={{ marginRight: 5, width: "49%" }}
               onClick={() => {
-                const newPos = results[currentResultIndex]
-                  .split("-")!
-                  .map(Number);
-                player!.moveTo(level!.getPos(newPos[1], newPos[0]));
-                console.log(player!.pos, currentResultIndex);
                 setCurrentResultIndex((x) => {
                   if (x === 0) return results.length - 1;
                   return x - 1;
                 });
+                const newPos = results[currentResultIndex]
+                  .split("-")!
+                  .map(Number);
+                // make the player move to the next result step by step
+                setPlayerPos(level!.getPos(newPos[1], newPos[0]));
+                console.log(player!.pos, currentResultIndex);
               }}
             >
               <ArrowBigLeft />
@@ -145,10 +132,10 @@ function App() {
                 const newPos = results[currentResultIndex]
                   .split("-")!
                   .map(Number);
-                player!.moveTo(level!.getPos(newPos[1], newPos[0]));
+                setPlayerPos(level!.getPos(newPos[1], newPos[0]));
                 console.log(player!.pos, currentResultIndex);
                 setCurrentResultIndex((x) => {
-                  if (x === results.length - 1) return 0;
+                  if (x === results.length - 1) return x;
                   return x + 1;
                 });
               }}
@@ -186,43 +173,6 @@ function App() {
               DFS
             </Button>
           </Center>
-          <Select
-            my={"xs"}
-            data={[
-              { value: "default", label: "Default" },
-              { value: "start", label: "Start Point" },
-              { value: "2kilos", label: "2Kilos Bin" },
-              { value: "3kilos", label: "3Kilos Bin" },
-              { value: "recicle", label: "Recicle Point" },
-            ]}
-            value="default"
-          />
-          <Center>
-            <ActionIcon
-              size={"lg"}
-              color={"blue"}
-              variant="filled"
-              disabled={false}
-              style={{ marginRight: 5, width: "49%" }}
-            >
-              <Search size={14} />
-            </ActionIcon>
-            <ActionIcon
-              size={"lg"}
-              color={"blue"}
-              variant="filled"
-              disabled={results.length < 1 ? true : false}
-              style={{ marginLeft: 5, width: "49%" }}
-              onClick={() =>
-                showNotification({
-                  title: "Search Result",
-                  message: results.join(",  "),
-                })
-              }
-            >
-              <InfoCircle size={14} />
-            </ActionIcon>
-          </Center>
           <Dropzone
             my={"xs"}
             style={{ alignItems: "flex-end" }}
@@ -230,14 +180,8 @@ function App() {
               const parsedInput = parseInputFileText(await files[0].text());
               setInputText(parseInputFileText(await files[0].text()));
               const loadedGraph = graphFromInput(parsedInput);
-              if (loadedGraph !== undefined) {
-                setGraph(loadedGraph);
-                console.log(dfsOnGraph(loadedGraph, "recicle"));
-              }
-              console.log(
-                "file content\n",
-                parseInputFileText(await files[0].text())
-              );
+              if (loadedGraph === undefined) return
+              fileAux(loadedGraph, setGraph, selectedAlgo, setResults);
             }}
             onReject={(files) => console.log("rejected files", files)}
             maxSize={3 * 1024 ** 2}
@@ -254,3 +198,36 @@ function App() {
 }
 
 export default App;
+function fileAux(loadedGraph: import("c:/Users/Verzach3/Proyectos/proyecto-final-discretas-2/src/Classes/GraphNode").GraphNode | undefined, setGraph: { (valOrUpdater: GraphNode | ((currVal: GraphNode | undefined) => GraphNode | undefined) | undefined): void; (valOrUpdater: GraphNode | ((currVal: GraphNode | undefined) => GraphNode | undefined) | undefined): void; (arg0: GraphNode): void; }, selectedAlgo: string, setResults: React.Dispatch<React.SetStateAction<string[]>>) {
+  if (loadedGraph !== undefined) {
+    setGraph(loadedGraph);
+    if (selectedAlgo === "DFS") {
+      const [threekilosResult, threekilosEndGraph, p1] = dfsOnGraph(
+        loadedGraph,
+        "3kilos"
+      );
+      const [twokilosResult, twokilosEndGraph, p2] = dfsOnGraph(
+        threekilosEndGraph!,
+        "2kilos"
+      );
+      const [recicleResult, recicleEndGraph, p3] = dfsOnGraph(twokilosEndGraph!, "recicle");
+      setResults([...threekilosResult, ...twokilosResult, ...recicleResult]);
+      console.log(recicleEndGraph);
+    }
+    if (selectedAlgo === "BFS") {
+      console.log("BFS");
+      const [threekilosResult, threekilosEndGraph, p1] = bfsOnGraph(
+        loadedGraph,
+        "3kilos"
+      );
+      const [twokilosResult, twokilosEndGraph, p2] = bfsOnGraph(
+        threekilosEndGraph!,
+        "2kilos"
+      );
+      const [recicleResult, recicleEndGraph, p3] = bfsOnGraph(twokilosEndGraph!, "recicle");
+      setResults([...p1, ...p2, ...p3]);
+      console.log(recicleEndGraph);
+    }
+  }
+}
+

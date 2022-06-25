@@ -14,10 +14,10 @@ export function dfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, Gr
   let found = false;
   function dfs(graph: GraphNode){
     console.log("visiting", graph.getId());
-    path.push(graph.getId());
     if(found){
       return;
     }
+    path.push(graph.getId());
     if(visited.has(graph.getId())){
       return;
     }
@@ -28,9 +28,9 @@ export function dfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, Gr
       console.log("found", graph.getId());
       return;
     }
-    graph.getChilds().forEach(child => {
-      dfs(child);
-    }); 
+    for (let i = graph.getChilds().length - 1; i >= 0; i--) {
+      dfs(graph.getChilds()[i]);
+    }
   }
   dfs(graph);
   return [visited, finalGraph, path];

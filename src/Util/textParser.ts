@@ -10,7 +10,7 @@ export function parseInputFileText(
   const gridSize = parseInt(text.split("\n")[0]);
   const rest = text.split("\n").slice(1);
   // Convert grid data to array of strings
-  const gridData = rest.map((line) => line.split(""));
+  const gridData = rest.map((line) => line.split(" "));
   // remove \r from each string
   gridData.forEach((line) =>
     line.forEach((char, index) => {

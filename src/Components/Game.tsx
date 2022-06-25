@@ -61,8 +61,8 @@ function Game() {
         height: 32,
         "0": () => [K.sprite("floor"), "structure"],
         "1": () => [K.sprite("wall"), "structure"],
-        "2": () => [K.sprite("2kilos"), "structure"],
-        "3": () => [K.sprite("3kilos"), "structure"],
+        "2": () => [K.sprite("2kilos"), "structure", "2kg", K.area()],
+        "3": () => [K.sprite("3kilos"), "structure", "3kg", K.area()],
         "4": () => [K.sprite("start"), "structure", "startpoint"],
         "5": () => [K.sprite("recicle"), "structure", "endpoint"],
       });
