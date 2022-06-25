@@ -4,8 +4,10 @@ Juan Camilo Varela Ocoró - 202060166
 --------------------------------------------------------------------------------
 */
 
+//Se importa la clase GraphNode y type para implementarle el reocrrido en amplitud
 import { GraphNode, GraphTypes } from "../Classes/GraphNode";
-// this funtion searchs for a GraphNode with a specific type and returns the full path to it
+
+//Esta función busca un GraphNode con un tipo específico y devuelve la ruta completa
 export function bfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, GraphNode | undefined, string[]] {
   let visited = new Set<string>();
   let path: string[] = [];
@@ -19,6 +21,8 @@ export function bfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, Gr
       continue;
     }
     console.log("visiting", visited);
+
+    //Si el id actual ya ha sido visitado, es agregado al set de los visitatods
     if (visited.has(current.getId())) {
       continue;
     }
@@ -28,6 +32,8 @@ export function bfsOnGraph(graph: GraphNode, type: GraphTypes): [Set<string>, Gr
       finalGraph = current;
       break;
     }
+
+    //Recorre el set de nodos para generar el grafo
     for (let i = 0; i < current.getChilds().length; i++) {
       queue.push(current.getChilds()[i]);
     }

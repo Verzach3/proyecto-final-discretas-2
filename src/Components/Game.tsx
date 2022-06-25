@@ -40,7 +40,6 @@ function Game() {
           global: false,
           canvas: canvas.current,
 
-          // background: [255, 255, 255],
         })
       );
     }
@@ -84,12 +83,6 @@ function Game() {
           K.camPos(K.vec2(pos.x/3 , pos.y/2));
         }
       })
-      
-      // K.add([
-      //   K.sprite("player"),
-      //   K.pos(currentLevel.getPos(0,4)),
-      //   "player"
-      // ])
 
     });
   }, [currentInput]);

@@ -1,3 +1,9 @@
+/*
+Gabriel Correa Cardenas - 202073013
+Juan Camilo Varela Ocoró - 202060166
+--------------------------------------------------------------------------------
+*/
+
 import {
   ActionIcon,
   AppShell,
@@ -57,13 +63,6 @@ function App() {
     if(results === undefined) return;
     const newPos = results![0]!.split("-")!.map(Number);
     const newPlayer = K!.add([K!.sprite("player"), K!.pos(level.getPos(newPos[1], newPos[0])), K!.area(), K!.z(1000), "structure"]);
-    // newPlayer.onCollide("2kg", () => {
-    //   K!.add([
-    //     K!.sprite("floor"),
-    //     K!.pos(newPlayer.pos)
-    //   ])
-    //   K!.destroyAll("2kg")
-    // })
     setPlayer(
       newPlayer
     );
@@ -114,7 +113,7 @@ function App() {
                 const newPos = results[currentResultIndex]
                   .split("-")!
                   .map(Number);
-                // make the player move to the next result step by step
+                // hace que el jugador pase al siguiente resultado paso a paso
                 setPlayerPos(level!.getPos(newPos[1], newPos[0]));
                 console.log(player!.pos, currentResultIndex);
               }}

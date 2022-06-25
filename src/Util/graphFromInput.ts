@@ -1,3 +1,9 @@
+/*
+Gabriel Correa Cardenas - 202073013
+Juan Camilo Varela Ocoró - 202060166
+--------------------------------------------------------------------------------
+*/
+
 import { GraphNode } from "../Classes/GraphNode";
 
 export function graphFromInput(input: [size: number, gridData: number[][]]) {
