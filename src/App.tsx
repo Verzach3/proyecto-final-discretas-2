@@ -1,4 +1,16 @@
-import { AppShell, Button, Navbar, Text, useMantineTheme } from "@mantine/core";
+import {
+  ActionIcon,
+  AppShell,
+  Button,
+  Center,
+  Modal,
+  MultiSelect,
+  Navbar,
+  Notification,
+  Select,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import React, { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -14,6 +26,15 @@ import { graphFromInput } from "./Util/graphFromInput";
 import { parseInputFileText } from "./Util/textParser";
 import { documentExample } from "./Util/exampleInputs";
 import { dfsOnGraph } from "./Util/dfs";
+import {
+  Adjustments,
+  AdjustmentsOff,
+  ArrowBigLeft,
+  ArrowBigRight,
+  InfoCircle,
+  Search,
+} from "tabler-icons-react";
+import { showNotification } from "@mantine/notifications";
 
 function App() {
   const K = useRecoilValue(globalKaboom);
@@ -21,7 +42,11 @@ function App() {
   const level = useRecoilValue(currentLevel);
   const [graph, setGraph] = useRecoilState(currentGraph);
   const theme = useMantineTheme();
+  const [selectedAlgo, setSelectedAlgo] = useState<"DFS" | "BFS">("DFS");
+  const [results, setResults] = useState<string[]>([]);
+  const [currentPos, setCurrentPos] = useState<[number, number]>([0, 0]);
   const [lastsetpos, setLastsetpos] = useState([0, 0]);
+  const [playerPos, setPlayerPos] = useState([0, 0]);
 
   useEffect(() => {
     if (!level || !K) return;
@@ -30,15 +55,14 @@ function App() {
       K!.pos(level!.getPos(K!.vec2(lastsetpos[1], lastsetpos[0]))),
     ]);
   }, [level]);
+
   return (
     <AppShell
       padding={"md"}
       navbar={
         <Navbar p="md" width={{ sm: 200, lg: 300 }}>
-          <Text mt={"xs"}>Log On Kaboom</Text>
-          <Button my={"xs"} onClick={() => K!.debug.log("Hi")}>
-            Cargar Archivo
-          </Button>
+          <Text my={"xs"}>Log On Kaboom</Text>
+          <Button onClick={() => K!.debug.log("Hi")}>Cargar Archivo</Button>
           <Button my={"xs"} onClick={() => K!.destroyAll("structure")}>
             Destroy All
           </Button>
@@ -55,12 +79,100 @@ function App() {
                 console.log(dfsresult);
                 const lastsetpos = [...dfsresult].pop()!.split("-").map(Number);
                 setLastsetpos(lastsetpos);
+                setPlayerPos([...dfsresult][0].split("-")!.map(Number));
               }
             }}
           >
             Load Document Example
           </Button>
+          <Center my={"xs"}>
+            <ActionIcon
+              size={"lg"}
+              variant="filled"
+              color={"blue"}
+              style={{ marginRight: 5, width: "49%" }}
+            >
+              <ArrowBigLeft />
+            </ActionIcon>
+            <ActionIcon
+              size={"lg"}
+              variant="filled"
+              color={"blue"}
+              style={{ marginLeft: 5, width: "49%" }}
+            >
+              <ArrowBigRight />
+            </ActionIcon>
+          </Center>
+          <Center>
+            <Button
+              disabled={selectedAlgo === "BFS" ? true : false}
+              style={{ marginRight: 5, width: "49%" }}
+              leftIcon={
+                selectedAlgo === "BFS" ? (
+                  <AdjustmentsOff size={14} />
+                ) : (
+                  <Adjustments size={14} />
+                )
+              }
+              onClick={() => setSelectedAlgo("BFS")}
+            >
+              BFS
+            </Button>
+            <Button
+              disabled={selectedAlgo === "DFS" ? true : false}
+              style={{ marginLeft: 5, width: "49%" }}
+              leftIcon={
+                selectedAlgo === "DFS" ? (
+                  <AdjustmentsOff size={14} />
+                ) : (
+                  <Adjustments size={14} />
+                )
+              }
+              onClick={() => setSelectedAlgo("DFS")}
+            >
+              DFS
+            </Button>
+          </Center>
+          <Select
+            my={"xs"}
+            data={[
+              { value: "default", label: "Default" },
+              { value: "start", label: "Start Point" },
+              { value: "2kilos", label: "2Kilos Bin" },
+              { value: "3kilos", label: "3Kilos Bin" },
+              { value: "recicle", label: "Recicle Point" },
+            ]}
+            value="default"
+          />
+          <Center>
+            <ActionIcon
+              size={"lg"}
+              color={"blue"}
+              variant="filled"
+              disabled={false}
+              style={{ marginRight: 5, width: "49%" }}
+            >
+              <Search size={14} />
+            </ActionIcon>
+            <ActionIcon
+              size={"lg"}
+              color={"blue"}
+              variant="filled"
+              disabled={results.length < 1 ? true : false}
+              style={{ marginLeft: 5, width: "49%" }}
+              onClick={() =>
+                showNotification({
+                  title: "Search Result",
+                  message: results.join(",  "),
+                })
+              }
+            >
+              <InfoCircle size={14} />
+            </ActionIcon>
+          </Center>
           <Dropzone
+            my={"xs"}
+            style={{ alignItems: "flex-end" }}
             onDrop={async (files) => {
               const parsedInput = parseInputFileText(await files[0].text());
               setInputText(parseInputFileText(await files[0].text()));
