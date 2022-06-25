@@ -37,7 +37,7 @@ import {
 import { showNotification } from "@mantine/notifications";
 import { GameObj, PosComp, SpriteComp, Vec2 } from "kaboom";
 import { bfsOnGraph } from "./Util/bfs";
-import { GraphNode } from "c:/Users/Verzach3/Proyectos/proyecto-final-discretas-2/src/Classes/GraphNode";
+import { GraphNode } from "./Classes/GraphNode"
 
 function App() {
   const K = useRecoilValue(globalKaboom);
@@ -197,7 +197,7 @@ function App() {
 }
 
 export default App;
-function fileAux(loadedGraph: import("c:/Users/Verzach3/Proyectos/proyecto-final-discretas-2/src/Classes/GraphNode").GraphNode | undefined, setGraph: { (valOrUpdater: GraphNode | ((currVal: GraphNode | undefined) => GraphNode | undefined) | undefined): void; (valOrUpdater: GraphNode | ((currVal: GraphNode | undefined) => GraphNode | undefined) | undefined): void; (arg0: GraphNode): void; }, selectedAlgo: string, setResults: React.Dispatch<React.SetStateAction<string[]>>) {
+function fileAux(loadedGraph: GraphNode | undefined, setGraph: { (valOrUpdater: GraphNode | ((currVal: GraphNode | undefined) => GraphNode | undefined) | undefined): void; (valOrUpdater: GraphNode | ((currVal: GraphNode | undefined) => GraphNode | undefined) | undefined): void; (arg0: GraphNode): void; }, selectedAlgo: string, setResults: React.Dispatch<React.SetStateAction<string[]>>) {
   if (loadedGraph !== undefined) {
     setGraph(loadedGraph);
     if (selectedAlgo === "DFS") {
