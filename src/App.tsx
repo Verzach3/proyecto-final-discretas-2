@@ -85,8 +85,9 @@ function App() {
       padding={"md"}
       navbar={
         <Navbar p="md" width={{ sm: 200, lg: 300 }}>
-          <Button onClick={() => K!.debug.log("Hi")}>Cargar Archivo</Button>
+          <Button my={"xs"} onClick={() => K!.debug.log("Hi")}>Cargar Archivo</Button>
           <Button
+            
             onClick={() => {
               setInputText(parseInputFileText(documentExample));
 
