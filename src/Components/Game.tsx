@@ -64,8 +64,11 @@ function Game() {
       K.debug.log(currentLevel.getPos(0,5).toString())
 
       K.onMouseMove((pos) => {
-        K.debug.log(K.camPos().toString())
-        K.camPos(K.vec2(pos.x/2, pos.y/2));
+        if(K.isMouseDown()){
+
+          K.debug.log(K.camPos().toString())
+          K.camPos(K.vec2(pos.x/2, pos.y/2));
+        }
       })
       
       // K.add([
