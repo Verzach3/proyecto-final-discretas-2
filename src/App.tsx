@@ -95,6 +95,7 @@ function App() {
                 parseInputFileText(documentExample)
               );
               fileAux(loadedGraph, setGraph, selectedAlgo, setResults);
+              setCurrentResultIndex(0)
             }}
           >
             Cargar Ejemplo
@@ -179,6 +180,7 @@ function App() {
               const loadedGraph = graphFromInput(parsedInput);
               if (loadedGraph === undefined) return
               fileAux(loadedGraph, setGraph, selectedAlgo, setResults);
+              setCurrentResultIndex(0)
             }}
             onReject={(files) => console.log("rejected files", files)}
             maxSize={3 * 1024 ** 2}
